@@ -64,7 +64,7 @@ function onConnect(socket) {
     });
 }
 
-console.log('Server Started on port ${PORT} ');
+console.log(`Server Started on port Listening on ${PORT}`);
 
 function generateRoomNameCode() {
     const alphabet = 'abcdefghijklmnopqrstuvwxyz';
