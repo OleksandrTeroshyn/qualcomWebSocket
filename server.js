@@ -62,6 +62,8 @@ function onConnect(socket) {
     });
 }
 
+console.log('Server Started on port ${PORT} ');
+
 function generateRoomNameCode() {
     const alphabet = 'abcdefghijklmnopqrstuvwxyz';
     const letter = alphabet[Math.floor(Math.random() * alphabet.length)];
