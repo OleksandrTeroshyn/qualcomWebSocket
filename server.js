@@ -12,13 +12,59 @@ const server = express()
 
 const wss = new Server({ server });
 
-wss.on('connection', (ws) => {
-    console.log('Client connected');
-    ws.on('close', () => console.log('Client disconnected'));
-});
+wss.on('connection', onConnect);
 
-setInterval(() => {
-    wss.clients.forEach((client) => {
-        client.send(new Date().toTimeString());
+function onConnect(socket) {
+
+    socket.on('close', function () {
+        console.log('[Log   ] User disconnect');
     });
-}, 1000);
+
+    socket.on('message', function (message) {
+        message = new TextDecoder('utf-8').decode(message);
+        console.log('[Recive] ' + message);
+
+        try {
+            const data = JSON.parse(message);
+
+            switch (data.Type) {
+                case 'generate': {
+                    let code = generateRoomNameCode();
+                    while (roomList.includes(code)) {
+                        code = generateRoomNameCode();
+                    }
+                    roomList.push(code);
+                    console.log('[Log   ] generated: ' + code + ' | roomList :', roomList);
+                    socket.send(JSON.stringify({ Type: 'generated', Data: code }));
+                    break;
+                }
+                case 'check': {
+                    const code = data.Data.toLowerCase();
+                    const exists = roomList.includes(code);
+                    console.log('[Log   ] "' + code + '"' + (exists ? ' found' : ' not found') + '| roomList :', roomList);
+                    socket.send(JSON.stringify({ Type: 'checked', Data: exists }));
+                    break;
+                }
+                case 'remove': {
+                    const code = data.Data.toLowerCase();
+                    if (roomList.indexOf(code) !== -1) {
+                        roomList.splice(roomList.indexOf(code), 1);
+                        console.log('[Log   ] ' + code + ' removed  | roomList :', roomList);
+                    } else {
+                        console.log('[Log   ] ' + code + ' not found  | roomList :', roomList);
+                    }
+                    break;
+                }
+            }
+        } catch (error) {
+            console.log('Error', error);
+        }
+    });
+}
+
+function generateRoomNameCode() {
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    const letter = alphabet[Math.floor(Math.random() * alphabet.length)];
+    const number = Math.floor(Math.random() * 900) + 100;
+    return `${letter}${number}`;
+}
