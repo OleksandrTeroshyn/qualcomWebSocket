@@ -1,5 +1,14 @@
 {
+  "name": "your-app-name",
+  "version": "1.0.0",
+  "description": "WebSocket Server for Heroku",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
     "ws": "^8.16.0"
   }
 }
