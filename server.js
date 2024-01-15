@@ -14,6 +14,8 @@ const wss = new Server({ server });
 
 wss.on('connection', onConnect);
 
+const roomList = [];
+
 function onConnect(socket) {
 
     socket.on('close', function () {
