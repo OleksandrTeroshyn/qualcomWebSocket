@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
-const wsServer = new WebSocket.Server({ port: 9000 });
+const port = process.env.PORT || 3000;
+const wsServer = new WebSocket.Server({ port: port });
 
 const roomList = [];
 
